@@ -1,41 +1,27 @@
 package com.leetcode;
 
 import java.util.*;
-import java.util.stream.Stream;
 
 class Solution {
     public String frequencySort(String s) {
-        Map<String, Integer> quantidadesAparecidas = this.getQuantidadeDeLetras(s);
-        System.out.println(this.mountString(quantidadesAparecidas));
-        return "ok";
-    }
+        List<String> letras = List.of(s.split(""));
+        Map<String, Integer>letrasRepetidas = new HashMap<>();
 
-    protected String mountString(Map<String,Integer>frequencia){
-        StringBuilder string = new StringBuilder();
-        Integer maiorNumero = Collections.max(frequencia.values());
-        List<String> maiorChave = frequencia.entrySet()
+        for(String letra : letras) {
+            letrasRepetidas.put(letra, Collections.frequency(letras, letra));
+        }
+
+        List<Map.Entry<String, Integer>> sortedMap = letrasRepetidas.entrySet()
                 .stream()
-                .filter(chave -> chave.getValue().equals(maiorNumero))
-                .map(Map.Entry::getKey)
+                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
                 .toList();
 
-
-        return "ok";
-    }
-
-    protected Map<String,Integer> getQuantidadeDeLetras(String string) {
-        Map<String, Integer>quantidadesAparecidas = new HashMap<String, Integer>();
-
-        for (int i = 0; i < string.length(); i++) {
-            String letra = String.valueOf(string.charAt(i));
-
-            if (!quantidadesAparecidas.containsKey(letra)) {
-                quantidadesAparecidas.put(letra, 1);
-            }else {
-                Integer novaQuantidade= quantidadesAparecidas.get(letra) + 1;
-                quantidadesAparecidas.put(letra, novaQuantidade);
-            }
+        StringBuilder res = new StringBuilder();
+        for (Map.Entry<String, Integer> entry : sortedMap) {
+            res.append(String.valueOf(entry.getKey()).repeat(entry.getValue()));
         }
-        return quantidadesAparecidas;
+
+        return res.toString();
     }
+
 }
